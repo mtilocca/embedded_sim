@@ -1,0 +1,5 @@
+target_sources_ifdef(CONFIG_SIM_SENSORS   app PRIVATE sensors/sensors.cpp)
+target_sources_ifdef(CONFIG_SIM_SCADA     app PRIVATE scada/scada.cpp)
+target_sources_ifdef(CONFIG_SIM_ROBOTICS  app PRIVATE robotics/robotics.cpp)
+target_sources_ifdef(CONFIG_SIM_PUMPS     app PRIVATE pumps/pumps.cpp)
+target_sources_ifdef(CONFIG_SIM_WEBSERVER app PRIVATE webserver/webserver.cpp)

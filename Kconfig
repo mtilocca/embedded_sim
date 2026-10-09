@@ -1,0 +1,57 @@
+mainmenu "embedded_sim"
+
+source "Kconfig.zephyr"
+
+menu "Simulations"
+
+config SIM_SENSORS
+	bool "Sensor simulation"
+config SIM_SCADA
+	bool "SCADA simulation"
+config SIM_ROBOTICS
+	bool "Robotics simulation"
+config SIM_PUMPS
+	bool "Pump simulation"
+config SIM_WEBSERVER
+	bool "Web server simulation"
+	depends on SIM_WIFI
+
+config SIM_TICK_MS
+	int "Simulation step period (ms)"
+	default 100
+
+config SIM_WEBSERVER_PORT
+	int "Web server TCP port"
+	default 80
+	depends on SIM_WEBSERVER
+
+endmenu
+
+menu "Wi-Fi"
+
+config SIM_WIFI
+	bool "Join a Wi-Fi network at boot"
+
+config SIM_WIFI_SSID
+	string "SSID"
+	depends on SIM_WIFI
+
+config SIM_WIFI_PSK
+	string "Passphrase (empty = open network)"
+	depends on SIM_WIFI
+
+config SIM_STATIC_IPV4
+	string "Static IPv4 address (empty = DHCP)"
+	depends on SIM_WIFI
+
+config SIM_GATEWAY_IPV4
+	string "Gateway"
+	default "192.168.1.1"
+	depends on SIM_WIFI
+
+config SIM_NETMASK_IPV4
+	string "Netmask"
+	default "255.255.255.0"
+	depends on SIM_WIFI
+
+endmenu
