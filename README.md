@@ -247,3 +247,4 @@ bundled `QConn_Flash_Cmd-ubuntu` for the NCP.
 | Browser: Broker chip stays red | Mosquitto has no WebSocket listener on 9001, see [docs/web.md](docs/web.md); the Device chip is independent |
 | UI is the tiny fallback page | `web/dist` was not built when the firmware was built: run `scripts/web-build.sh`, then rebuild |
 | Web UI hangs or loads only sometimes (ping works, curl works) | browsers hold parallel keep-alive connections plus the WebSocket; `HTTP_SERVER_MAX_CLIENTS=6` and a 3 s inactivity timeout are set in `prj.conf` to avoid running out of slots |
+| UI loads from a second device/tab but shows no data (Device chip red or flapping) | Zephyr allows only 1 WebSocket by default (`WEBSOCKET_MAX_CONTEXTS`); set to 8 in `prj.conf`, up to 4 viewers (`SIM_WS_MAX_CLIENTS`), the newest evicts the oldest |

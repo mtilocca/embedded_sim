@@ -289,3 +289,4 @@ non-`const` copy of the UI once pushed the ESP32 over its DRAM limit.
 | MQTT keepalive | `mqtt_live()` returns `-EAGAIN` when no ping is due; not an error |
 | STM32 Wi-Fi | ST67W611M1 needs one-time T02 firmware (locks the module): [stm32-wifi.md](stm32-wifi.md) |
 | Kernel tick | coarse; jitter of 1-5 ms observed on ESP32 |
+| WebSocket viewers | Zephyr default is ONE websocket system-wide: extra viewers were upgraded then closed at once. `WEBSOCKET_MAX_CONTEXTS=8`, `SIM_WS_MAX_CLIENTS=4`; when full, `net/ws/ws.cpp` evicts the oldest viewer (stale tabs/phones that left the Wi-Fi are only noticed when a send fails) |

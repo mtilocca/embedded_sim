@@ -17,7 +17,7 @@ Same shape as an MQTT message, so both sources are handled identically:
 {"topic":"embedded_sim/stm32-01/status","p":{"state":"online","board":"nucleo_u575zi_q","uptime_ms":99000}}
 ```
 
-Status is sent every second as a heartbeat. Browser -> device commands are not implemented yet (planned: `.../set`).
+Status is sent every second as a heartbeat. Up to `SIM_WS_MAX_CLIENTS` (4) browsers can watch at once; a new viewer evicts the oldest one when the table is full. Browser -> device commands are not implemented yet (planned: `.../set`).
 If a sample arrives from both sources, duplicates are dropped by device-uptime `t`.
 
 ## Firmware

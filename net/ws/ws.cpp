@@ -17,18 +17,14 @@ K_MSGQ_DEFINE(queue, sizeof(telemetry::Message), CONFIG_SIM_WS_QUEUE_LEN, 4);
 K_THREAD_STACK_DEFINE(stack, 3072);
 struct k_thread thread;
 K_MUTEX_DEFINE(clients_lock);
-int clients[CONFIG_SIM_WS_MAX_CLIENTS] = {-1};
-bool clients_init;
 
-void init_clients()
-{
-	if (!clients_init) {
-		for (int &c : clients) {
-			c = -1;
-		}
-		clients_init = true;
-	}
-}
+// One entry per connected viewer. `seq` orders them so the oldest can be evicted.
+struct Client {
+	int sock = -1;
+	uint32_t seq = 0;
+};
+Client clients[CONFIG_SIM_WS_MAX_CLIENTS];
+uint32_t next_seq;
 
 int offer(const telemetry::Message &m)
 {
@@ -39,16 +35,16 @@ int offer(const telemetry::Message &m)
 void broadcast(const char *buf, int len)
 {
 	k_mutex_lock(&clients_lock, K_FOREVER);
-	for (int &c : clients) {
-		if (c < 0) {
+	for (Client &c : clients) {
+		if (c.sock < 0) {
 			continue;
 		}
-		int ret = websocket_send_msg(c, reinterpret_cast<const uint8_t *>(buf), len,
+		int ret = websocket_send_msg(c.sock, reinterpret_cast<const uint8_t *>(buf), len,
 					     WEBSOCKET_OPCODE_DATA_TEXT, false, true, 200);
 		if (ret < 0) {
 			LOG_INF("ws client dropped (%d)", ret);
-			websocket_unregister(c);
-			c = -1;
+			websocket_unregister(c.sock);
+			c.sock = -1;
 		}
 	}
 	k_mutex_unlock(&clients_lock);
@@ -58,8 +54,8 @@ bool have_clients()
 {
 	bool any = false;
 	k_mutex_lock(&clients_lock, K_FOREVER);
-	for (int c : clients) {
-		any = any || c >= 0;
+	for (const Client &c : clients) {
+		any = any || c.sock >= 0;
 	}
 	k_mutex_unlock(&clients_lock);
 	return any;
@@ -107,7 +103,6 @@ void run(void *, void *, void *)
 
 int start()
 {
-	init_clients();
 	telemetry::add_sink(offer);
 	k_tid_t tid = k_thread_create(&thread, stack, K_THREAD_STACK_SIZEOF(stack), run, nullptr,
 				      nullptr, nullptr, K_PRIO_PREEMPT(9), 0, K_NO_WAIT);
@@ -122,19 +117,30 @@ int start()
 extern "C" int sim_ws_setup(int ws_socket, struct http_request_ctx *, void *)
 {
 	using namespace net::ws;
-	int ret = -ENOENT;
 
 	k_mutex_lock(&clients_lock, K_FOREVER);
-	init_clients();
-	for (int &c : clients) {
-		if (c < 0) {
-			c = ws_socket;
-			ret = 0;
+
+	// Free slot, else evict the oldest viewer: the newest connection wins, so
+	// stale tabs or phones that left the Wi-Fi cannot lock everyone else out.
+	Client *slot = nullptr;
+	for (Client &c : clients) {
+		if (c.sock < 0) {
+			slot = &c;
 			break;
 		}
+		if (!slot || static_cast<int32_t>(c.seq - slot->seq) < 0) {
+			slot = &c;
+		}
 	}
+	if (slot->sock >= 0) {
+		LOG_INF("ws table full, evicting oldest viewer");
+		websocket_unregister(slot->sock);
+	}
+	slot->sock = ws_socket;
+	slot->seq = next_seq++;
+
 	k_mutex_unlock(&clients_lock);
 
-	LOG_INF("ws client %s", ret == 0 ? "connected" : "refused (full)");
-	return ret; // <0: server closes the connection
+	LOG_INF("ws client connected");
+	return 0;
 }
