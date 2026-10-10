@@ -10,7 +10,7 @@ class Scada : public Simulation {
 public:
 	const char *name() const override { return "scada"; }
 	int init() override { return 0; }
-	void step(uint32_t now_ms) override { (void)now_ms; }
+	void step(const rt::Tick &) override {}
 };
 
 } // namespace

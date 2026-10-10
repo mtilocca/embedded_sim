@@ -13,16 +13,47 @@ config SIM_ROBOTICS
 config SIM_PUMPS
 	bool "Pump simulation"
 config SIM_WEBSERVER
-	bool "Web server simulation"
+	bool "Device-hosted web UI + live WebSocket"
 	depends on SIM_WIFI
+	select SIM_TELEMETRY
+	select HTTP_SERVER
+	select HTTP_SERVER_WEBSOCKET
 
-config SIM_TICK_MS
-	int "Simulation step period (ms)"
+config SIM_TELEMETRY
+	bool
+	select CBPRINTF_FP_SUPPORT
+	help
+	  Telemetry bus (net/telemetry): sims publish, MQTT/WebSocket sinks consume.
+
+config SIM_DEFAULT_PERIOD_MS
+	int "Default simulation period (ms), overridable per simulation"
 	default 100
+
+config SIM_MAX_TASKS
+	int "Maximum number of simulation threads"
+	default 8
+
+config SIM_TASK_STACK_SIZE
+	int "Stack size per simulation thread"
+	default 2048
+
+config SIM_STATS_PERIOD_S
+	int "Log real-time task statistics every N seconds (0 = off)"
+	default 10
 
 config SIM_WEBSERVER_PORT
 	int "Web server TCP port"
 	default 80
+	depends on SIM_WEBSERVER
+
+config SIM_WS_MAX_CLIENTS
+	int "Max simultaneous WebSocket viewers"
+	default 3
+	depends on SIM_WEBSERVER
+
+config SIM_WS_QUEUE_LEN
+	int "WebSocket outgoing sample queue length"
+	default 16
 	depends on SIM_WEBSERVER
 
 endmenu
@@ -53,5 +84,45 @@ config SIM_NETMASK_IPV4
 	string "Netmask"
 	default "255.255.255.0"
 	depends on SIM_WIFI
+
+endmenu
+
+menu "MQTT"
+
+config SIM_DEVICE_ID
+	string "Device id used in topics and as MQTT client id ([a-z0-9_-])"
+	default "dev-01"
+
+config SIM_MQTT
+	bool "Publish telemetry over MQTT"
+	depends on SIM_WIFI
+	select MQTT_LIB
+	select SIM_TELEMETRY
+
+if SIM_MQTT
+
+config SIM_MQTT_BROKER
+	string "Broker IPv4 address"
+	default "192.168.1.147"
+
+config SIM_MQTT_PORT
+	int "Broker port"
+	default 1883
+
+config SIM_MQTT_USER
+	string "Username (empty = anonymous)"
+
+config SIM_MQTT_PASSWORD
+	string "Password"
+
+config SIM_MQTT_KEEPALIVE_S
+	int "Keepalive (s)"
+	default 30
+
+config SIM_MQTT_QUEUE_LEN
+	int "Outgoing sample queue length"
+	default 16
+
+endif # SIM_MQTT
 
 endmenu

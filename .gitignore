@@ -1,2 +1,4 @@
 build/
 secrets.conf
+web/node_modules/
+web/dist/
