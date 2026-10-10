@@ -24,7 +24,8 @@ Open `http://192.168.1.45/` or `http://192.168.1.44/` for the live UI
 >   an optional second source.
 > - Not yet built: the `scada`, `robotics`, `pumps` models (empty skeletons; `sensors`
 >   emits a placeholder `demo_temp`), TLS, secure boot, OTA, the `utils/` codegen.
->   See [docs/architecture.md](docs/architecture.md) for the roadmap.
+>   What exists is documented with diagrams in [docs/architecture.md](docs/architecture.md);
+>   the proposed next steps are in [docs/roadmap.md](docs/roadmap.md).
 
 ## Repository layout
 
@@ -245,3 +246,4 @@ bundled `QConn_Flash_Cmd-ubuntu` for the NCP.
 | ESP32 intermittently unreachable (`No route to host`) | Wi-Fi modem sleep drops ARP/TCP; `ESP32_WIFI_STA_POWER_SAVE_NONE=y` is set in the board conf |
 | Browser: Broker chip stays red | Mosquitto has no WebSocket listener on 9001, see [docs/web.md](docs/web.md); the Device chip is independent |
 | UI is the tiny fallback page | `web/dist` was not built when the firmware was built: run `scripts/web-build.sh`, then rebuild |
+| Web UI hangs or loads only sometimes (ping works, curl works) | browsers hold parallel keep-alive connections plus the WebSocket; `HTTP_SERVER_MAX_CLIENTS=6` and a 3 s inactivity timeout are set in `prj.conf` to avoid running out of slots |
