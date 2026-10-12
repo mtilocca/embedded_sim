@@ -70,19 +70,21 @@ to MQTT or the web UI directly.
 ### Data path
 
 ```mermaid
-flowchart LR
-    subgraph MCU["Board (STM32 or ESP32)"]
-        sims["sims/*<br/>periodic RT threads"] -->|"telemetry::publish()"| bus["net/telemetry<br/>(non-blocking fan-out)"]
-        rt["core/rt stats"] --> bus
-        bus --> mq["net/mqtt<br/>client thread"]
-        bus --> wsq["net/ws<br/>WebSocket thread"]
-        http["HTTP server<br/>embedded UI from flash"]
+flowchart TD
+    subgraph MCU["Board: STM32 or ESP32"]
+        sims["Simulations<br/>periodic RT threads"] -->|"publish"| bus["Telemetry bus<br/>non-blocking fan-out"]
+        rtstats["RT stats"] --> bus
+        bus --> mqttc["MQTT client thread"]
+        bus --> wsthread["WebSocket thread"]
+        httpsrv["HTTP server<br/>UI files from flash"]
     end
-    mq -->|"embedded_sim/dev/sim/signal"| broker[("Mosquitto :1883")]
-    broker --> tele["Telegraf (planned)"] --> influx[("InfluxDB")] --> grafana["Grafana"]
-    broker -->|"WebSocket :9001 (optional)"| browser
-    wsq -->|"/ws  {topic, p}"| browser["Browser UI"]
-    http -->|"/ app.js app.css"| browser
+    mqttc -->|"MQTT topics"| broker[("Mosquitto 1883")]
+    broker --> telegraf["Telegraf, planned"]
+    telegraf --> influx[("InfluxDB")]
+    influx --> grafana["Grafana"]
+    broker -->|"WebSocket 9001, optional"| browser["Browser UI"]
+    wsthread -->|"live frames over /ws"| browser
+    httpsrv -->|"index.html, app.js, app.css"| browser
 ```
 
 The browser merges the device WebSocket (always available) with the optional broker
@@ -171,7 +173,7 @@ flowchart TB
 ### Wi-Fi path on each board
 
 ```mermaid
-flowchart LR
+flowchart TD
     api["net::wifi_connect()<br/>Zephyr wifi_mgmt API"]
     subgraph STM32["NUCLEO-U575ZI-Q"]
         mcu["STM32U575 host<br/>runs TCP/IP stack (T02 profile)"]

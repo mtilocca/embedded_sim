@@ -246,7 +246,7 @@ Screenshots of every tab: [web.md](web.md#tour-of-the-ui).
 ## 8. Build and flash pipeline
 
 ```mermaid
-flowchart LR
+flowchart TD
     ts["web/src/*.ts + css"] -- "scripts/web-build.sh<br/>tsc + vite" --> dist["web/dist<br/>index.html app.js app.css"]
     fb["web/fallback<br/>(tiny page)"] -. "used if dist is missing" .-> gz
     dist -- "CMake: gzip to .inc" --> gz["build/.../generated/*.gz.inc"]
@@ -264,7 +264,7 @@ Measured on 2026-10-10 with the UI embedded. The ESP32's RAM is the scarce
 resource, not flash.
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph esp["ESP32 (4 MB flash, about 192 KB + 93 KB DRAM)"]
         ef["Flash 18%:<br/>code + const UI (about 135 KB gz)"]
         ed0["DRAM0 55%:<br/>kernel, stacks, net buffers"]

@@ -56,7 +56,7 @@ Goal: add a new device by dropping in its file, not by editing C++. Python with
 Jinja2 templates (decided).
 
 ```mermaid
-flowchart LR
+flowchart TD
     in1["Modbus register list<br/>CSV, XLSX or JSON"] --> parse
     in2["Other point lists<br/>(SCADA tags, sensor specs)"] --> parse
     parse["utils/codegen<br/>parse and validate<br/>against a schema"] --> yaml["device.yaml<br/>normalised, human-editable,<br/>the single source of truth"]
@@ -93,7 +93,7 @@ table) or only through MQTT.
 ## 4. Step 3: dashboards pipeline
 
 ```mermaid
-flowchart LR
+flowchart TD
     boards["boards"] -- "embedded_sim/#" --> mosq[("Mosquitto")]
     mosq --> tele["Telegraf<br/>mqtt_consumer + json_v2<br/>topic_parsing: device, sim, signal"]
     tele --> influx[("InfluxDB 2<br/>bucket: embedded_sim")]
