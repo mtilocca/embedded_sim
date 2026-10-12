@@ -13,7 +13,9 @@ unchanged for two very different Wi-Fi boards; only per-board config differs.
 | `esp32` | ESP32-DevKitC (procpu) | native on-chip Wi-Fi | 192.168.1.44 | `esp32-01` |
 
 Open `http://192.168.1.45/` or `http://192.168.1.44/` for the live UI
-(Overview, Charts, Real-time, Console, Settings).
+(Overview, Charts, Real-time, Console, Settings; see the [tour](docs/web.md#tour-of-the-ui)).
+
+![Overview tab of the web UI](docs/img/ui-overview.png)
 
 > **Status (what works, verified on hardware)**
 > - Wi-Fi on both boards, static IPs, secrets kept out of git.

@@ -28,7 +28,56 @@ If a sample arrives from both sources, duplicates are dropped by device-uptime `
 
 ## Frontend (`web/`, TypeScript + Vite, deps: uPlot, mqtt.js)
 
-Tabs: Overview (live tiles), Charts (one per signal), Real-time (task jitter/exec/overruns), Console (raw frames, filter/pause), Settings (optional broker).
+## Tour of the UI
+
+Screenshots of the page served by the STM32 (`http://192.168.1.45/`) with the
+optional broker source enabled, so it shows both boards. The **Device** chip is
+the board's own WebSocket, **Broker** is the MQTT-over-WebSocket source; green
+means connected.
+
+### Overview
+
+One tile per signal, plus a card per device (online state, board, uptime).
+Both boards appear on one page: `esp32-01` arrives through the broker.
+
+![Overview tab: device cards for stm32-01 and esp32-01, one demo_temp tile each](img/ui-overview.png)
+
+### Charts
+
+One live chart per numeric signal, kept for the last 600 samples. The placeholder
+`demo_temp` signal is a 60 s sine wave, so the two boards' traces are phase
+shifted by their boot time.
+
+![Charts tab: two sine-wave traces, one per board](img/ui-charts.png)
+
+### Real-time
+
+Timing health of the real-time core, per board and task. `jitter max` is the
+worst lateness of a step start against its deadline, `exec avg` the mean step
+duration, and `overruns` counts missed deadlines (red when above 0). Here the
+ESP32 shows about 4.5 ms of jitter against 0.2 ms on the STM32, both with zero
+overruns. Values refresh every `SIM_STATS_PERIOD_S` (10 s).
+
+![Real-time tab: table of jitter, execution time and overruns for sensors and webserver on both boards](img/ui-realtime.png)
+
+### Console
+
+The raw frames as they arrive, with a topic/payload filter, Pause and Clear.
+Every sample of the board serving the page appears twice, once as `[device]`
+and once as `[mqtt]`; the store drops the duplicate (same device uptime `t`),
+so charts and tiles show it once. The other board only appears as `[mqtt]`.
+
+![Console tab: scrolling list of device and mqtt frames](img/ui-console.png)
+
+### Settings
+
+Optional second source. The broker URL, user and password are stored in this
+browser only (`localStorage`), never on the board. See the Mosquitto listener
+section below for the broker side.
+
+![Settings tab: MQTT broker form with enabled checked and ws://192.168.1.147:9001](img/ui-settings.png)
+
+Tabs (details above): Overview (live tiles), Charts (one per signal), Real-time (task jitter/exec/overruns), Console (raw frames, filter/pause), Settings (optional broker).
 
 ```sh
 sudo apt install -y nodejs npm      # once

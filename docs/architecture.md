@@ -233,6 +233,8 @@ flowchart TD
     v5 -. "broker URL, user, password (this browser only)" .-> src2
 ```
 
+Screenshots of every tab: [web.md](web.md#tour-of-the-ui).
+
 | Tab | Shows |
 |-----|-------|
 | Overview | live tile per signal, device online/offline, board, uptime |
