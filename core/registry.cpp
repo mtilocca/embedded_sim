@@ -14,6 +14,9 @@ Simulation &robotics();
 #ifdef CONFIG_SIM_PUMPS
 Simulation &pumps();
 #endif
+#ifdef CONFIG_SIM_BEARING_AI
+Simulation &bearing_ai();
+#endif
 #ifdef CONFIG_SIM_WEBSERVER
 Simulation &webserver();
 #endif
@@ -32,6 +35,9 @@ Simulation *const *enabled(size_t &count)
 #endif
 #ifdef CONFIG_SIM_PUMPS
 		&pumps(),
+#endif
+#ifdef CONFIG_SIM_BEARING_AI
+		&bearing_ai(),
 #endif
 #ifdef CONFIG_SIM_WEBSERVER
 		&webserver(),

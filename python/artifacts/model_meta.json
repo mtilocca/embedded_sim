@@ -1,0 +1,17 @@
+{
+  "classes": [
+    "normal",
+    "inner",
+    "ball",
+    "outer"
+  ],
+  "window": 512,
+  "fs_hz": 12000,
+  "input_scale": 0.03588606044650078,
+  "input_zero_point": -3,
+  "logit_scale": 0.09744485219319661,
+  "logit_zero_point": -38,
+  "macs": 183040,
+  "tflite_bytes": 9008,
+  "params": 5548
+}

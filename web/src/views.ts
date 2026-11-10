@@ -11,7 +11,8 @@ export interface View {
 }
 
 const byKey = (a: Sig, b: Sig) => a.key.localeCompare(b.key);
-const plain = () => [...signals.values()].filter((s) => s.sim !== 'rt').sort(byKey);
+// rt = timing table, bearing_ai = dedicated tab (bearing.ts)
+const plain = () => [...signals.values()].filter((s) => s.sim !== 'rt' && s.sim !== 'bearing_ai').sort(byKey);
 
 // ---------------------------------------------------------------- Overview
 export function overview(): View {

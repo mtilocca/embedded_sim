@@ -12,6 +12,21 @@ config SIM_ROBOTICS
 	bool "Robotics simulation"
 config SIM_PUMPS
 	bool "Pump simulation"
+config SIM_BEARING_AI
+	bool "Embedded AI: bearing condition monitoring (TFLite Micro, int8)"
+	depends on CPU_CORTEX_M
+	select TENSORFLOW_LITE_MICRO
+	select TENSORFLOW_LITE_MICRO_CMSIS_NN_KERNELS
+	select SIM_TELEMETRY
+	help
+	  Runs an int8 CNN (trained in python/) on replayed vibration windows.
+	  Needs the TFLite Micro module: run scripts/setup-tflm.sh once.
+
+config SIM_BEARING_AI_DWELL_S
+	int "Seconds the scripted machine stays in each health condition"
+	default 15
+	depends on SIM_BEARING_AI
+
 config SIM_WEBSERVER
 	bool "Device-hosted web UI + live WebSocket"
 	depends on SIM_WIFI

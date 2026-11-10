@@ -1,0 +1,13 @@
+# CPU-only PyTorch: pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch
+numpy
+scipy
+scikit-learn
+matplotlib
+onnx
+onnxscript
+onnxruntime
+# TFLite interpreter + flatbuffer schema (used to write and verify the int8 model).
+# TensorFlow itself is NOT needed: its wheels require AVX and crash on older CPUs.
+ai-edge-litert
+flatbuffers

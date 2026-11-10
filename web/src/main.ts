@@ -2,9 +2,10 @@ import './style.css';
 import { h } from './dom';
 import { conn, subscribe, notify } from './store';
 import { startDeviceSocket, applyMqtt, loadMqtt } from './sources';
+import { bearingAi } from './bearing';
 import { overview, charts, realtime, console_, settings, View } from './views';
 
-const views: View[] = [overview(), charts(), realtime(), console_(), settings()];
+const views: View[] = [overview(), charts(), bearingAi(), realtime(), console_(), settings()];
 let active = 0;
 
 const chip = (name: string) => h('span', { class: 'chip' }, h('span', { class: 'dot' }), h('span', {}, name));

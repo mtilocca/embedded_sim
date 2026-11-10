@@ -42,3 +42,15 @@ main { padding: 16px; max-width: 1400px; margin: 0 auto; }
 .form h3 { margin: 0; }
 .field { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
 [hidden] { display: none !important; }
+
+/* Bearing AI tab */
+.ok-text { color: var(--ok); } 
+.meter { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.meter-fill { height: 100%; width: 0; transition: width .3s; }
+.ai-row { display: grid; grid-template-columns: minmax(280px, 1fr) 2fr; gap: 12px; margin: 12px 0; align-items: start; }
+.ai-note { margin: 0; }
+.pbar { display: grid; grid-template-columns: 84px 1fr 52px; gap: 8px; align-items: center; margin-top: 8px; font-size: 13px; }
+.pbar-track { height: 10px; background: var(--line); border-radius: 5px; overflow: hidden; }
+.pbar-fill { height: 100%; width: 0; transition: width .3s; }
+.pbar-val { text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 720px) { .ai-row { grid-template-columns: 1fr; } }

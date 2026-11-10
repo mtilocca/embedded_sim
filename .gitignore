@@ -2,3 +2,11 @@ build/
 secrets.conf
 web/node_modules/
 web/dist/
+
+# python ML pipeline
+python/.venv/
+python/data/raw/
+python/__pycache__/
+python/bearing/__pycache__/
+python/.venv-install.log
+python/data/__pycache__/
